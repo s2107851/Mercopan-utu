@@ -37,3 +37,14 @@ El stock inicial de un ingrediente nuevo es cero. La carga de compras y los ajus
 manuales están pendientes; los ejemplos permiten practicar mientras se implementan.
 El registro de cambios de desarrollo se consulta en los commits de GitHub.
 Proyecto preparado e integrado con asistencia de IA; el equipo debe revisar y comprender el código.
+
+## Productos y recetas
+En Productos se crean los productos terminados y su unidad de medida.
+En Recetas se indica cuántos productos rinde un lote y qué ingredientes utiliza.
+La receta se puede editar; el catálogo se puede desactivar sin borrar sus referencias.
+El precio del producto queda preparado para una futura etapa de ventas.
+
+Una instalación nueva con ejemplos crea Pan flauta y su receta de demostración:
+20 unidades, 5 kg de harina, 0,120 kg de levadura y 0,080 kg de sal.
+En una base ya usada no se insertan ejemplos otra vez; registrar el producto y la receta
+manualmente para conservar los datos existentes.

@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->beginTransaction();
             if (isset($_POST['demo'])) {
                 $pdo->exec(file_get_contents(__DIR__ . '/database/demo.sql'));
-                if (is_file(__DIR__ . '/database/demo_completo.sql')) $pdo->exec(file_get_contents(__DIR__ . '/database/demo_completo.sql'));
+                if (is_file(__DIR__ . '/database/demo_produccion.sql')) $pdo->exec(file_get_contents(__DIR__ . '/database/demo_produccion.sql'));
             } else $pdo->exec("INSERT INTO personas(nombre) VALUES ('Responsable inicial')");
             $pdo->commit();
         }
