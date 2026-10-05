@@ -1,0 +1,7 @@
+MERCOPAN UTU
+
+Iniciar Apache y MySQL en XAMPP.
+Abrir http://localhost/Mercopan-utu/instalar.php
+Preparar la base y elegir responsable.
+
+Leer README.md para configuración y alcance.
