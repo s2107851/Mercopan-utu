@@ -23,20 +23,21 @@ return ['host'=>'127.0.0.1', 'puerto'=>'3306', 'base'=>'mercopan_utu', 'usuario'
 ```
 
 ## Módulos disponibles
-Personal, proveedores, ingredientes, consulta de stock, aviso de stock bajo, compras
-y selección de responsable. El historial registra las altas, ediciones, cambios de estado
-y compras. Las bajas de catálogos son lógicas: desactivar conserva sus relaciones e historial.
+Personal, proveedores, ingredientes, consulta de stock, aviso de stock bajo, compras,
+ajustes de inventario y selección de responsable. El historial registra altas, ediciones,
+cambios de estado, compras y ajustes. Las bajas de catálogos son lógicas: desactivar
+conserva las relaciones y el historial de movimientos anteriores.
 
 ## Organización del código
 - `includes/funciones.php`: PDO, validaciones, formularios, transacciones e historial.
 - `includes/catalogos.php`: formularios comunes de personal, proveedores e ingredientes.
 - `includes/compras.php`: validación y guardado transaccional de compras de materias primas.
+- `includes/ajustes.php`: registro de conteos y corrección de stock con trazabilidad.
 - `database/`: tablas y ejemplos ficticios.
 - `assets/`: estilos y pequeñas mejoras de los formularios.
 
-El stock inicial de un ingrediente nuevo es cero. Las compras incrementan el stock;
-los ajustes manuales por inventario siguen pendientes. Los ejemplos ficticios permiten
-practicar mientras se implementan las siguientes funcionalidades.
+El stock inicial de un ingrediente nuevo es cero. Las compras incrementan el stock y
+los ajustes permiten corregirlo por inventario sin modificar compras o producciones.
 El registro de cambios de desarrollo se consulta en los commits de GitHub.
 Proyecto preparado e integrado con asistencia de IA; el equipo debe revisar y comprender el código.
 
@@ -62,6 +63,16 @@ transacción. No se permiten cantidades negativas, fracciones para artículos co
 ni superar la capacidad de la columna de stock. No se duplica un formulario reenviado.
 No se incluye todavía lectura automática de facturas, anulaciones ni devoluciones.
 
+## Ajustes de inventario
+En Ajustes se selecciona un ingrediente activo, se ingresa la cantidad **real que se
+contó físicamente** y se justifica el motivo. El sistema calcula la diferencia respecto
+del stock registrado y guarda los valores anterior y nuevo, la fecha, el motivo y el
+responsable. Se puede ajustar a cero, pero no a valores negativos ni fracciones de
+unidades. No se guarda un ajuste si el conteo coincide con el stock actual.
+
+Los ajustes se registran separados de compras y producción para mantener su historial.
+Consultar `docs/COMMIT_06_ajustes_inventario.md` para instrucciones de implementación.
+
 ## Producción
 Cubre HU03 (registrar lo elaborado), HU04 (descontar ingredientes) y HU10 (consultar
 producciones por fecha). Elegir un producto con receta, ingresar lotes enteros y confirmar.
@@ -81,12 +92,10 @@ Revisar su consumo en Producción y su responsable en Historial.
 Probar muchos lotes sin stock suficiente: no debe cambiar ninguna existencia.
 
 ### Pruebas automatizadas
-Desde la carpeta del proyecto, ejecutar `php tests/produccion.php` y
-`php tests/compras.php` con MySQL iniciado.
-En Windows pueden usarse `C:\xampp\php\php.exe tests\produccion.php` y
-`C:\xampp\php\php.exe tests\compras.php`.
+Desde la carpeta del proyecto, ejecutar `php tests/produccion.php`,
+`php tests/compras.php` y `php tests/ajustes.php` con MySQL iniciado.
+En Windows pueden usarse `C:\xampp\php\php.exe tests\produccion.php`,
+`C:\xampp\php\php.exe tests\compras.php` y `C:\xampp\php\php.exe tests\ajustes.php`.
 El usuario de MySQL necesita permiso para crear bases. Cada prueba crea una base temporal
 con nombre aleatorio, utiliza únicamente esa base y la elimina al terminar.
 No ejecutar los scripts demo manualmente sobre una base real.
-
-Consultar `docs/COMMIT_05_compras.md` para instrucciones de este cambio.

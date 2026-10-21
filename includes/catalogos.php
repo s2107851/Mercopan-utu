@@ -52,7 +52,7 @@ require 'header.php';
 <?php if ($tipo==='ingredientes'): ?>
 <?php if (!$editar): ?><label for="unidad">Unidad del stock</label><select id="unidad" name="unidad"><option value="kg">Kilogramos</option><option value="l">Litros</option><option value="unidad">Unidades</option></select><?php else: ?><p>Unidad: <strong><?= e($editar['unidad']) ?></strong> (no se cambia)</p><?php endif; ?>
 <label for="minimo">Stock mínimo</label><input id="minimo" name="minimo" type="number" min="0" max="999999" step="0.001" required value="<?= valor('minimo',$editar['minimo'] ?? 0) ?>">
-<p class="ayuda">Los ingredientes nuevos comienzan en cero. La carga de ingresos y los ajustes de stock están pendientes.</p>
+<p class="ayuda">Los ingredientes nuevos comienzan en cero. Usá <a href="compras.php">Compras</a> para registrar ingresos y <a href="ajustes.php">Ajustes</a> cuando el conteo físico no coincida con el sistema.</p>
 <?php endif; ?><button type="submit">Guardar registro</button><?php if($editar): ?><a class="boton secundario" href="<?= e($tipo) ?>.php">Cancelar</a><?php endif; ?></form></section>
 <section class="panel"><h2>Registros</h2><div class="tabla"><table><thead><tr><th>Nombre</th><th><?= $tipo==='ingredientes'?'Stock / mínimo':'Estado' ?></th><th>Acciones</th></tr></thead><tbody>
 <?php $filas=consulta("SELECT * FROM $tipo ORDER BY activo DESC,nombre")->fetchAll(); foreach ($filas as $r): ?>
