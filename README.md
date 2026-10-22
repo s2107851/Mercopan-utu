@@ -23,16 +23,18 @@ return ['host'=>'127.0.0.1', 'puerto'=>'3306', 'base'=>'mercopan_utu', 'usuario'
 ```
 
 ## Módulos disponibles
-Personal, proveedores, ingredientes, consulta de stock, aviso de stock bajo, compras,
-ajustes de inventario y selección de responsable. El historial registra altas, ediciones,
-cambios de estado, compras y ajustes. Las bajas de catálogos son lógicas: desactivar
-conserva las relaciones y el historial de movimientos anteriores.
+Personal, proveedores, ingredientes, productos terminados, recetas, producción,
+consulta de stock, avisos de stock bajo, compras, ajustes de inventario, ventas y selección
+de responsable. El historial registra altas, ediciones, cambios de estado, elaboraciones,
+compras, ajustes y ventas. Las bajas de catálogos son lógicas: desactivar conserva sus
+relaciones y el historial de movimientos anteriores.
 
 ## Organización del código
 - `includes/funciones.php`: PDO, validaciones, formularios, transacciones e historial.
 - `includes/catalogos.php`: formularios comunes de personal, proveedores e ingredientes.
 - `includes/compras.php`: validación y guardado transaccional de compras de materias primas.
 - `includes/ajustes.php`: registro de conteos y corrección de stock con trazabilidad.
+- `includes/ventas.php`: validación de ventas y descuento de stock de productos terminados.
 - `database/`: tablas y ejemplos ficticios.
 - `assets/`: estilos y pequeñas mejoras de los formularios.
 
@@ -45,12 +47,26 @@ Proyecto preparado e integrado con asistencia de IA; el equipo debe revisar y co
 En Productos se crean los productos terminados y su unidad de medida.
 En Recetas se indica cuántos productos rinde un lote y qué ingredientes utiliza.
 La receta se puede editar; el catálogo se puede desactivar sin borrar sus referencias.
-El precio del producto queda preparado para una futura etapa de ventas.
+El precio vigente se utiliza para registrar cada venta y su importe histórico.
 
 Una instalación nueva con ejemplos crea Pan flauta y su receta de demostración:
 20 unidades, 5 kg de harina, 0,120 kg de levadura y 0,080 kg de sal.
 En una base ya usada no se insertan ejemplos otra vez; registrar el producto y la receta
 manualmente para conservar los datos existentes.
+
+## Ventas de productos terminados
+En **Ventas** se elige un producto activo con existencias y la cantidad vendida.
+El sistema toma el precio del catálogo, calcula el importe y descuenta los productos
+terminados; no descuenta materias primas de nuevo (ya se consumieron al producir).
+Cada venta guarda fecha, cantidad, precio de ese momento, importe y responsable.
+Los productos por unidad exigen cantidades enteras; los vendidos por kg admiten tres
+decimales. No se permite vender más stock que el disponible.
+
+La operación guarda venta, descuento e historial en una única transacción; un fallo
+revierte todos los cambios. Se pueden filtrar ventas por día o consultar todas las fechas,
+con total de importes y paginación. Cada registro corresponde a **un producto**.
+Todavía no incluye pagos, facturación electrónica, devoluciones ni anulaciones.
+Para detalles y validación, consultar `docs/COMMIT_07_ventas.md`.
 
 ## Compras e ingreso de stock
 En Compras se selecciona un proveedor y un ingrediente activos, se indica la cantidad
@@ -93,9 +109,10 @@ Probar muchos lotes sin stock suficiente: no debe cambiar ninguna existencia.
 
 ### Pruebas automatizadas
 Desde la carpeta del proyecto, ejecutar `php tests/produccion.php`,
-`php tests/compras.php` y `php tests/ajustes.php` con MySQL iniciado.
-En Windows pueden usarse `C:\xampp\php\php.exe tests\produccion.php`,
-`C:\xampp\php\php.exe tests\compras.php` y `C:\xampp\php\php.exe tests\ajustes.php`.
+`php tests/compras.php`, `php tests/ajustes.php` y `php tests/ventas.php`
+con MySQL iniciado.
+En Windows pueden usarse las mismas rutas con `C:\xampp\php\php.exe`,
+por ejemplo `C:\xampp\php\php.exe tests\ventas.php`.
 El usuario de MySQL necesita permiso para crear bases. Cada prueba crea una base temporal
 con nombre aleatorio, utiliza únicamente esa base y la elimina al terminar.
 No ejecutar los scripts demo manualmente sobre una base real.
