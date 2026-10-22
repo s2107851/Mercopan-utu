@@ -36,7 +36,7 @@ function rechazarVenta(string $descripcion, array $datos): void {
 try {
     $servidor->exec('CREATE DATABASE `' . $basePrueba . '` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
     $creada = true;
-    foreach (['base', 'productos', 'ventas', 'demo', 'demo_produccion'] as $archivo) {
+    foreach (['base', 'productos', 'recetas', 'ventas', 'demo', 'demo_produccion'] as $archivo) {
         db()->exec(file_get_contents(__DIR__ . '/../database/' . $archivo . '.sql'));
     }
     $_SESSION['persona'] = 1;
