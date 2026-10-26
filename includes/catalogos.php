@@ -43,6 +43,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (Throwable $e) { $error = mensajeError($e); }
 }
 $editar = consulta("SELECT * FROM $tipo WHERE id=?", [(int)($_GET['editar'] ?? 0)])->fetch() ?: [];
+$buscar = ''; $filas = [];
+if ($tipo === 'ingredientes') {
+    require_once __DIR__ . '/busqueda_catalogo.php';
+    try { ['buscar'=>$buscar, 'filas'=>$filas] = buscarCatalogo('ingredientes', $_GET); }
+    catch (Throwable $ex) { $error = mensajeError($ex); }
+} else $filas = consulta("SELECT * FROM $tipo ORDER BY activo DESC,nombre")->fetchAll();
 require 'header.php';
 ?>
 <div class="dos"><section class="panel"><h2><?= $editar ? 'Editar registro' : 'Agregar registro' ?></h2>
@@ -54,11 +60,16 @@ require 'header.php';
 <label for="minimo">Stock mínimo</label><input id="minimo" name="minimo" type="number" min="0" max="999999" step="0.001" required value="<?= valor('minimo',$editar['minimo'] ?? 0) ?>">
 <p class="ayuda">Los ingredientes nuevos comienzan en cero. Usá <a href="compras.php">Compras</a> para registrar ingresos y <a href="ajustes.php">Ajustes</a> cuando el conteo físico no coincida con el sistema.</p>
 <?php endif; ?><button type="submit">Guardar registro</button><?php if($editar): ?><a class="boton secundario" href="<?= e($tipo) ?>.php">Cancelar</a><?php endif; ?></form></section>
-<section class="panel"><h2>Registros</h2><div class="tabla"><table><thead><tr><th>Nombre</th><th><?= $tipo==='ingredientes'?'Stock / mínimo':'Estado' ?></th><th>Acciones</th></tr></thead><tbody>
-<?php $filas=consulta("SELECT * FROM $tipo ORDER BY activo DESC,nombre")->fetchAll(); foreach ($filas as $r): ?>
+<section class="panel"><h2>Registros</h2>
+<?php if ($tipo==='ingredientes'): ?>
+<form method="get" class="filtros"><div><label for="buscar">Buscar ingrediente por nombre</label><input id="buscar" name="buscar" maxlength="100" value="<?= e($buscar) ?>" placeholder="Ejemplo: hari"></div><button>Buscar</button><a class="boton secundario" href="ingredientes.php">Limpiar búsqueda</a></form>
+<p role="status"><?= count($filas) ?> coincidencias<?= $buscar!==''?' para «'.e($buscar).'»':'' ?>.</p>
+<?php endif; ?><div class="tabla"><table><thead><tr><th>Nombre</th><th><?= $tipo==='ingredientes'?'Stock / mínimo':'Estado' ?></th><th>Acciones</th></tr></thead><tbody>
+<?php foreach ($filas as $r): ?>
 <tr class="<?= $tipo==='ingredientes' && $r['activo'] && $r['stock']<=$r['minimo'] ? 'bajo' : '' ?>"><td><?= e($r['nombre']) ?><?php if ($tipo==='proveedores'): ?><small><?= e($r['telefono']) ?></small><?php endif; ?></td>
 <td><?php if($tipo==='ingredientes'): ?><?= n($r['stock']) ?> <?= e($r['unidad']) ?><small>Mínimo: <?= n($r['minimo']) ?></small><?php endif; ?><span class="badge"><?= $r['activo']?'Activo':'Inactivo' ?></span></td>
-<td><a href="<?= e($tipo) ?>.php?editar=<?= e($r['id']) ?>">Editar</a> <form class="enlinea" method="post" data-confirmar="¿Cambiar el estado de este registro?"><?php formulario(); ?><input type="hidden" name="id" value="<?= e($r['id']) ?>"><input type="hidden" name="cambiar_estado" value="1"><button class="secundario" type="submit"><?= $r['activo']?'Desactivar':'Activar' ?></button></form></td></tr>
-<?php endforeach; if (!$filas): ?><tr><td colspan="3" class="vacio">Todavía no hay registros.</td></tr><?php endif; ?></tbody></table></div></section></div>
+<td><a href="<?= e($tipo) ?>.php?<?= e(http_build_query(['editar'=>$r['id']] + ($tipo==='ingredientes'?['buscar'=>$buscar]:[]))) ?>">Editar</a> <form class="enlinea" method="post" data-confirmar="¿Cambiar el estado de este registro?"><?php formulario(); ?><input type="hidden" name="id" value="<?= e($r['id']) ?>"><input type="hidden" name="cambiar_estado" value="1"><button class="secundario" type="submit"><?= $r['activo']?'Desactivar':'Activar' ?></button></form></td></tr>
+<?php endforeach; if (!$filas): ?><tr><td colspan="3" class="vacio"><?= $tipo==='ingredientes' && $buscar!==''?'No hay ingredientes que coincidan con la búsqueda.':'Todavía no hay registros.' ?></td></tr><?php endif; ?></tbody></table></div></section></div>
 <p class="ayuda">Desactivar oculta el registro de nuevas operaciones y conserva sus referencias anteriores.</p>
 <?php require 'footer.php'; ?>
+

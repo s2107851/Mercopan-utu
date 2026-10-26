@@ -130,3 +130,14 @@ En Pérdidas / donaciones se retiran productos elaborados indicando cantidad y m
 Guarda stock anterior/nuevo, fecha y responsable en una transacción; no genera ventas ni
 consume materias primas otra vez. Consulta por período y tipo con totales separados por unidad.
 Consultar `docs/COMMIT_12_salidas.md`. Prueba: `php tests/salidas.php`.
+
+
+## Búsqueda por nombre (commit 13 · HU15)
+Ingredientes y Productos permiten buscar por nombre completo o parcial y limpiar el filtro.
+Los símbolos %, _ y ! se buscan como texto literal. Se incluyen registros activos e inactivos,
+conservando existencias, unidades y estados. Buscar no modifica datos ni genera historial.
+La comparación de mayúsculas/tildes depende de la intercalación de MySQL; la instalación
+normal usa utf8mb4_unicode_ci. Se admiten hasta 100 bytes de texto UTF-8.
+Después de guardar una edición se vuelve al listado sin filtro, como en las pantallas previas.
+No requiere migración ni volver a ejecutar el instalador. Ver `docs/COMMIT_13_busqueda.md`.
+Prueba: `php tests/busqueda.php`.
