@@ -3,13 +3,14 @@
  * Registra la venta de un producto terminado. Debe llamarse desde guardar()
  * para conservar venta, existencias e historial en una sola transacción.
  */
-function registrarVenta(): void {
-    $idTexto = trim((string)($_POST['producto'] ?? ''));
+function registrarVenta(?array $datos = null): int {
+    $datos = $datos ?? $_POST;
+    $idTexto = trim((string)($datos['producto'] ?? ''));
     if (!ctype_digit($idTexto) || (int)$idTexto < 1) {
         throw new RuntimeException('Seleccioná un producto válido.');
     }
     $productoId = (int)$idTexto;
-    $cantidad = numero($_POST['cantidad'] ?? '', 0.001, 999999, 3);
+    $cantidad = numero($datos['cantidad'] ?? '', 0.001, 999999, 3);
 
     // La fila queda bloqueada mientras se comprueban y descuentan las existencias.
     $producto = consulta(
@@ -55,4 +56,6 @@ function registrarVenta(): void {
         'Venta #' . $ventaId . ': ' . n($cantidad) . ' ' . $producto['unidad'] .
         ' de ' . $producto['nombre'] . ' · $ ' . n($totalGuardado, 2)
     );
+    return $ventaId;
 }
+

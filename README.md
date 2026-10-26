@@ -116,3 +116,11 @@ por ejemplo `C:\xampp\php\php.exe tests\ventas.php`.
 El usuario de MySQL necesita permiso para crear bases. Cada prueba crea una base temporal
 con nombre aleatorio, utiliza únicamente esa base y la elimina al terminar.
 No ejecutar los scripts demo manualmente sobre una base real.
+
+
+## Pedidos de clientes (commit 11)
+Registrar un producto por pedido y consultar los estados pendiente, listo, entregado y cancelado.
+Anotar/listar/cancelar no reserva ni descuenta stock. Al entregar un pedido listo, se registra
+una venta al precio vigente y se descuenta stock en la misma transacción. No registrar esa
+venta otra vez desde Ventas. Sin stock suficiente la entrega no se confirma.
+Consultar `docs/COMMIT_11_pedidos.md`. Prueba: `php tests/pedidos.php`.
