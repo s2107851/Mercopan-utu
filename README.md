@@ -99,7 +99,7 @@ El filtro por día empieza en hoy y permite consultar otras jornadas o todas las
 Cada operación actualiza ingredientes, productos e historial en una sola transacción.
 Si falta stock, un ingrediente está inactivo o falla el guardado, se revierte todo.
 No se admite reenviar el mismo formulario. La producción toma la fecha actual del servidor
-con zona horaria de Uruguay. No se incluyen edición/anulación de elaboraciones ni mermas.
+con zona horaria de Uruguay. No se incluyen edición/anulación de elaboraciones en esta pantalla. Las pérdidas de productos terminados se registran en Pérdidas / donaciones.
 
 ### Prueba rápida
 Con ejemplos y sin movimientos previos: elaborar un lote de Pan flauta.
@@ -124,3 +124,9 @@ Anotar/listar/cancelar no reserva ni descuenta stock. Al entregar un pedido list
 una venta al precio vigente y se descuenta stock en la misma transacción. No registrar esa
 venta otra vez desde Ventas. Sin stock suficiente la entrega no se confirma.
 Consultar `docs/COMMIT_11_pedidos.md`. Prueba: `php tests/pedidos.php`.
+
+## Pérdidas y donaciones (commit 12)
+En Pérdidas / donaciones se retiran productos elaborados indicando cantidad y motivo/destino.
+Guarda stock anterior/nuevo, fecha y responsable en una transacción; no genera ventas ni
+consume materias primas otra vez. Consulta por período y tipo con totales separados por unidad.
+Consultar `docs/COMMIT_12_salidas.md`. Prueba: `php tests/salidas.php`.
