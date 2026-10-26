@@ -23,6 +23,7 @@ $valores=$f ?? ['desde'=>date('Y-m-01'),'hasta'=>date('Y-m-d'),'persona'=>0,'mod
 <div><label for="buscar">Texto de la acción</label><input id="buscar" name="buscar" maxlength="100" value="<?= e($valores['buscar']) ?>"></div>
 <button>Buscar acciones</button><a href="historial.php" class="boton secundario">Limpiar filtros</a></form></section>
 <?php if($f): ?>
+<a class="boton secundario" href="exportar.php?<?= e(http_build_query(['tipo'=>'historial','desde'=>$f['desde'],'hasta'=>$f['hasta'],'persona'=>$f['persona'],'modulo'=>$f['modulo'],'buscar'=>$f['buscar']])) ?>">Exportar todas las acciones filtradas CSV</a>
 <section class="panel"><h2><?= e($total) ?> acciones encontradas</h2><div class="tabla"><table>
 <thead><tr><th>Fecha</th><th>Responsable</th><th>Módulo</th><th>Acción</th></tr></thead><tbody>
 <?php foreach($filas as $r): ?><tr><td><?= e($r['fecha']) ?></td><td><?= e($r['persona_nombre']) ?></td><td><?= e($r['modulo']) ?></td><td><?= e($r['detalle']) ?></td></tr><?php endforeach; ?>

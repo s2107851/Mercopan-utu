@@ -15,6 +15,10 @@ $titulo='Resumen por período'; require 'includes/header.php';
 <button>Consultar período</button></form>
 <p>Período: <?= e($desde) ?> al <?= e($hasta) ?>, ambos días incluidos.</p>
 <?php if ($resumen): ?>
+<div class="acciones no-imprimir">
+<?php foreach(['ventas'=>'Exportar ventas CSV','compras'=>'Exportar compras CSV'] as $tipo=>$texto): ?>
+<a class="boton secundario" href="exportar.php?<?= e(http_build_query(['tipo'=>$tipo,'desde'=>$desde,'hasta'=>$hasta])) ?>"><?= e($texto) ?></a>
+<?php endforeach; ?></div>
 <div class="grid">
 <div class="tarjeta"><h2>Ventas registradas</h2><div class="numero">$ <?= n($resumen['ventas']['importe'],2) ?></div><p><?= e($resumen['ventas']['registros']) ?> registros</p></div>
 <div class="tarjeta"><h2>Compras registradas</h2><div class="numero">$ <?= n($resumen['compras']['importe'],2) ?></div><p><?= e($resumen['compras']['registros']) ?> registros</p></div>
