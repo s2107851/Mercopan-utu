@@ -49,6 +49,7 @@ $titulo = 'Compras';
 require 'includes/header.php';
 ?>
 <p class="descripcion">Registrá el ingreso de materias primas desde un proveedor. Cada compra suma ingredientes al stock y deja constancia del responsable.</p>
+<p><a class="boton" href="facturas.php">Cargar o consultar una factura completa</a></p>
 <div class="dos">
     <section class="panel">
         <h2>Ingresar una compra</h2>
@@ -83,7 +84,7 @@ require 'includes/header.php';
                 <input id="costo_total" name="costo_total" type="number" min="0" max="999999999.99" step="0.01" required value="<?= valor('costo_total') ?>">
                 <label for="comprobante">Número de factura o comprobante (opcional)</label>
                 <input id="comprobante" name="comprobante" maxlength="80" value="<?= valor('comprobante') ?>">
-                <p class="ayuda">Ingresá una compra por ingrediente. Si una factura tiene varios ingredientes, repetí el ingreso con el mismo número de comprobante. Para huevos u otros artículos contados se exigen cantidades enteras.</p>
+                <p class="ayuda">Para una factura con varios ingredientes usá Facturas. No registres aquí otra vez sus renglones. Para huevos u otros artículos contados se exigen cantidades enteras.</p>
                 <button class="amarillo" type="submit">Registrar compra</button>
             </form>
         <?php endif; ?>

@@ -7,7 +7,7 @@
 <header class="barra"><a class="marca" href="index.php"><span class="isotipo">M</span><span>MERCOPAN<small>Gestión de panadería · UTU</small></span></a>
 <a class="persona" href="responsable.php"><?= $persona ? e($persona['nombre']) . ' · Cambiar' : 'Elegir responsable' ?></a></header>
 <nav aria-label="Navegación principal">
-<?php $enlaces = ['index.php'=>'Inicio','ingredientes.php'=>'Ingredientes','compras.php'=>'Compras','ajustes.php'=>'Ajustes','productos.php'=>'Productos','recetas.php'=>'Recetas','produccion.php'=>'Producción','ventas.php'=>'Ventas','pedidos.php'=>'Pedidos','salidas.php'=>'Pérdidas / donaciones','reportes.php'=>'Resumen','historial.php'=>'Historial','personas.php'=>'Personal','proveedores.php'=>'Proveedores'];
+<?php $enlaces = ['index.php'=>'Inicio','ingredientes.php'=>'Ingredientes','compras.php'=>'Compras','facturas.php'=>'Facturas','ajustes.php'=>'Ajustes','productos.php'=>'Productos','recetas.php'=>'Recetas','produccion.php'=>'Producción','ventas.php'=>'Ventas','pedidos.php'=>'Pedidos','salidas.php'=>'Pérdidas / donaciones','reportes.php'=>'Resumen','historial.php'=>'Historial','personas.php'=>'Personal','proveedores.php'=>'Proveedores'];
 foreach ($enlaces as $archivo=>$nombre): if (!is_file(dirname(__DIR__) . '/' . $archivo)) continue; ?>
 <a <?= basename($_SERVER['SCRIPT_NAME']) === $archivo ? 'aria-current="page"' : '' ?> href="<?= e($archivo) ?>"><?= e($nombre) ?></a>
 <?php endforeach; ?></nav>

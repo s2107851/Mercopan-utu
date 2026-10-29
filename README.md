@@ -141,3 +141,36 @@ normal usa utf8mb4_unicode_ci. Se admiten hasta 100 bytes de texto UTF-8.
 Después de guardar una edición se vuelve al listado sin filtro, como en las pantallas previas.
 No requiere migración ni volver a ejecutar el instalador. Ver `docs/COMMIT_13_busqueda.md`.
 Prueba: `php tests/busqueda.php`.
+
+
+## Facturas de proveedores (entrega 14 · HU05, HU11 y HU12)
+En **Facturas** se carga proveedor, número con su serie, fecha de emisión y hasta
+50 ingredientes diferentes. Indicar cantidad y costo total de cada renglón, con los
+impuestos incluidos según el comprobante. El total se calcula sumando esos costos.
+
+**Guardar borrador** conserva los datos sin modificar stock ni registrar compras.
+Abrirlo otra vez permite corregir proveedor, número, fecha y renglones. La pantalla de
+revisión muestra el total y ofrece **Confirmar e ingresar stock** o **Cancelar borrador**.
+La confirmación genera una compra por renglón y actualiza todas las existencias en una
+transacción. No cargar esos ingresos de nuevo en Compras. Resumen y CSV de compras
+los incluyen automáticamente por fecha de confirmación/registro. En Facturas el filtro
+usa la **fecha de emisión**, y cada documento se muestra una sola vez.
+
+La combinación proveedor + número confirmado es única. Formularios repetidos y
+pestañas con una versión antigua se rechazan. Una factura confirmada o cancelada no
+se edita; cancelar un borrador no revierte compras porque todavía no tiene ingresos.
+Se conservan nombres históricos y responsables de carga/confirmación, además del
+historial de guardado y cancelación del borrador. No incluye OCR ni anulación de
+facturas confirmadas (la reversión de operaciones corresponde al pendiente HU16).
+
+**Actualización de BD obligatoria:** respaldar la base, copiar los archivos y abrir
+`instalar.php` desde la PC de XAMPP; pulsar **Preparar base de datos**. Agrega
+`facturas` y `factura_detalle` sin borrar tablas ni registros. Alternativa: importar
+solo `database/facturas.sql` dentro de la base existente. Usar uno de esos métodos.
+Las compras antiguas se conservan, pero no se agrupan automáticamente en facturas.
+No importar un SQL de instalación completa sobre la base de trabajo.
+
+Prueba: `php tests/facturas.php`. Ver `docs/ENTREGA_14_facturas.md`.
+Después de esta entrega quedan 20 de 21 historias implementadas en código; falta
+completar HU16 (anulación trazable de compras y producciones). La aceptación final
+requiere prueba en XAMPP y revisión del equipo.
