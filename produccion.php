@@ -1,5 +1,6 @@
 <?php
 require 'includes/inicio.php';
+require_once 'includes/anulaciones.php';
 require 'includes/produccion.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -84,7 +85,7 @@ require 'includes/header.php';
                 <tbody>
                 <?php foreach ($filas as $r): ?>
                     <tr>
-                        <td>#<?= e($r['id']) ?> · <?= e($r['nombre']) ?><small><?= e($r['fecha']) ?> · <?= e($r['lotes']) ?> lotes</small></td>
+                        <td><?php enlaceAnulacion('produccion',(int)$r['id']); ?>#<?= e($r['id']) ?> · <?= e($r['nombre']) ?><small><?= e($r['fecha']) ?> · <?= e($r['lotes']) ?> lotes</small></td>
                         <td><?= n($r['cantidad']) ?> <?= e($r['unidad']) ?></td>
                         <td><?= e($r['responsable']) ?></td>
                         <td>

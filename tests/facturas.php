@@ -15,7 +15,7 @@ function rechazarFactura(string $nombre, callable $accion): void {
 function nuevoBorrador(array $datos): int {
     $id=0; guardar(function() use($datos,&$id) { $id=guardarBorradorFactura($datos); }); return $id;
 }
-ejecutarPruebasModulo(['compras','facturas'],function() {
+ejecutarPruebasModulo(['compras','facturas','anulaciones'],function() {
     consulta("INSERT INTO proveedores(nombre) VALUES ('Molino')");
     consulta("INSERT INTO ingredientes(nombre,unidad,stock) VALUES ('Harina','kg',10),('Huevos','unidad',12)");
     // Compatibilidad: compra previa independiente y migración repetible.

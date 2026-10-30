@@ -1,5 +1,6 @@
 <?php
 require 'includes/inicio.php';
+require_once 'includes/anulaciones.php';
 require 'includes/compras.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -104,7 +105,7 @@ require 'includes/header.php';
                 <tbody>
                 <?php foreach ($filas as $r): ?>
                     <tr>
-                        <td>#<?= e($r['id']) ?> · <?= e($r['ingrediente_nombre']) ?>
+                        <td><?php enlaceAnulacion('compra',(int)$r['id']); ?>#<?= e($r['id']) ?> · <?= e($r['ingrediente_nombre']) ?>
                             <small><?= e($r['fecha']) ?><?= $r['comprobante'] !== '' ? ' · Comp.: ' . e($r['comprobante']) : '' ?></small>
                         </td>
                         <td><?= n($r['cantidad']) ?> <?= e($r['unidad']) ?></td>

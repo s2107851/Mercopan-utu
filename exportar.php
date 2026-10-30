@@ -13,8 +13,8 @@ try {
             $sql='SELECT v.id,v.fecha,p.nombre,p.unidad,v.cantidad,v.precio_unitario,v.total,v.persona_nombre FROM ventas v JOIN productos p ON p.id=v.producto_id WHERE v.fecha>=? AND v.fecha<? ORDER BY v.fecha,v.id';
             break;
         case 'compras':
-            $cabecera=['ID','Fecha','Proveedor','Ingrediente','Unidad','Cantidad','Costo UYU','Comprobante','Responsable actual'];
-            $sql='SELECT c.id,c.fecha,p.nombre,i.nombre,i.unidad,c.cantidad,c.costo_total,c.comprobante,r.nombre FROM compras c JOIN proveedores p ON p.id=c.proveedor_id JOIN ingredientes i ON i.id=c.ingrediente_id JOIN personas r ON r.id=c.persona_id WHERE c.fecha>=? AND c.fecha<? ORDER BY c.fecha,c.id';
+            $cabecera=['ID','Fecha','Proveedor','Ingrediente','Unidad','Cantidad','Costo UYU','Comprobante','Responsable actual','Estado','Fecha anulación','Motivo','Anuló'];
+            $sql='SELECT c.id,c.fecha,p.nombre,i.nombre,i.unidad,c.cantidad,c.costo_total,c.comprobante,r.nombre,CASE WHEN a.id IS NULL THEN \'vigente\' ELSE \'anulada\' END,a.fecha,a.motivo,a.persona_nombre FROM compras c JOIN proveedores p ON p.id=c.proveedor_id JOIN ingredientes i ON i.id=c.ingrediente_id JOIN personas r ON r.id=c.persona_id LEFT JOIN anulaciones a ON a.tipo=\'compra\' AND a.registro_id=c.id WHERE c.fecha>=? AND c.fecha<? ORDER BY c.fecha,c.id';
             break;
         case 'historial':
             $f=filtrosHistorial($_GET); $params=$f['params'];

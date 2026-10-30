@@ -9,6 +9,7 @@ try {
 } catch (Throwable $ex) { $error = mensajeError($ex); }
 $titulo='Resumen por período'; require 'includes/header.php';
 ?>
+<p class="ayuda">Las compras anuladas no suman en el resumen. El CSV las conserva identificadas para auditoría.</p>
 <form class="filtros no-imprimir" method="get">
 <div><label for="desde">Desde</label><input type="date" id="desde" name="desde" required value="<?= e($desde) ?>"></div>
 <div><label for="hasta">Hasta</label><input type="date" id="hasta" name="hasta" required value="<?= e($hasta) ?>"></div>

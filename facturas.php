@@ -1,6 +1,7 @@
 <?php
 require 'includes/inicio.php';
 require_once 'includes/facturas.php';
+require_once 'includes/anulaciones.php';
 $f=null; $listado=null; $listaError=''; $dia=''; $id=0; $editar=false;
 try {
     consulta('SELECT id FROM facturas LIMIT 1');
@@ -82,13 +83,14 @@ $titulo='Facturas'; require 'includes/header.php';
 <div class="acciones"><button type="button" class="secundario" id="agregar-renglon" hidden>Agregar renglón</button><button>Guardar borrador y revisar</button><?php if($f): ?><a class="boton secundario" href="facturas.php?id=<?= e($id) ?>">Volver sin guardar cambios</a><?php endif; ?></div>
 </form></section><script src="assets/facturas.js" defer></script>
 <?php elseif ($f): ?>
-<section class="panel"><h2>Factura #<?= e($f['id']) ?> · <?= e($f['estado']) ?></h2>
+<section class="panel"><h2>Factura #<?= e($f['id']) ?> · <?= anulacion('factura',(int)$f['id']) ? 'anulada' : e($f['estado']) ?></h2>
 <p>Proveedor: <?= e($f['proveedor_nombre']) ?> · Número: <?= e($f['numero']) ?> · Emisión: <?= e($f['emision']) ?></p>
 <p>Cargó: <?= e($f['persona_nombre']) ?> · <?= e($f['creada']) ?></p>
 <?php if($f['confirmada']): ?><p>Confirmó: <?= e($f['confirmador_nombre']) ?> · <?= e($f['confirmada']) ?></p><?php endif; ?>
 <div class="tabla"><table><thead><tr><th>Ingrediente</th><th>Cantidad</th><th>Costo</th><th>Ingreso en Compras</th></tr></thead><tbody>
 <?php foreach($f['items'] as $l): ?><tr><td><?= e($l['ingrediente_nombre']) ?></td><td><?= n($l['cantidad']) ?> <?= e($l['unidad']) ?></td><td>$ <?= n($l['costo_total'],2) ?></td><td><?= $l['compra_id'] ? '#'.e($l['compra_id']) : 'Sin ingreso' ?></td></tr><?php endforeach; ?>
 </tbody></table></div><p><strong>Total: $ <?= n($f['total'],2) ?></strong></p>
+<?php if($f['estado']==='confirmada') enlaceAnulacion('factura',(int)$f['id']); ?>
 <?php if($f['estado']==='borrador'): ?>
 <p>Revisá los renglones antes de confirmar. Este borrador todavía no modificó las existencias.</p>
 <div class="acciones"><a class="boton secundario" href="facturas.php?id=<?= e($id) ?>&editar=1">Editar borrador</a>
@@ -101,7 +103,7 @@ $titulo='Facturas'; require 'includes/header.php';
 <?php if($listaError): ?><p class="aviso error"><?= e($listaError) ?></p><?php elseif($listado): ?>
 <p><?= $listado['total'] ?> documentos · Página <?= $listado['pagina'] ?> de <?= $listado['paginas'] ?></p>
 <div class="tabla"><table><thead><tr><th>Emisión / número</th><th>Proveedor</th><th>Estado</th><th>Total</th><th>Detalle</th></tr></thead><tbody>
-<?php foreach($listado['filas'] as $r): ?><tr><td><?= e($r['emision']) ?><small><?= e($r['numero']) ?></small></td><td><?= e($r['proveedor_nombre']) ?></td><td><?= e($r['estado']) ?></td><td>$ <?= n($r['total'],2) ?></td><td><a class="boton secundario" href="facturas.php?id=<?= e($r['id']) ?>">Abrir #<?= e($r['id']) ?></a></td></tr><?php endforeach; ?>
+<?php foreach($listado['filas'] as $r): ?><tr><td><?= e($r['emision']) ?><small><?= e($r['numero']) ?></small></td><td><?= e($r['proveedor_nombre']) ?></td><td><?= anulacion('factura',(int)$r['id']) ? 'anulada' : e($r['estado']) ?></td><td>$ <?= n($r['total'],2) ?></td><td><a class="boton secundario" href="facturas.php?id=<?= e($r['id']) ?>">Abrir #<?= e($r['id']) ?></a></td></tr><?php endforeach; ?>
 <?php if(!$listado['filas']): ?><tr><td colspan="5" class="vacio">No hay facturas para esta fecha.</td></tr><?php endif; ?></tbody></table></div>
 <div class="acciones"><?php if($listado['pagina']>1): ?><a class="boton secundario" href="?<?= e(http_build_query(['dia'=>$dia,'pagina'=>$listado['pagina']-1])) ?>#listado">Anterior</a><?php endif; ?><?php if($listado['pagina']<$listado['paginas']): ?><a class="boton secundario" href="?<?= e(http_build_query(['dia'=>$dia,'pagina'=>$listado['pagina']+1])) ?>#listado">Siguiente</a><?php endif; ?></div>
 <?php endif; ?></section>

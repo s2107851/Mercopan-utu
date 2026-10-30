@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->exec('CREATE DATABASE IF NOT EXISTS `' . $config['base'] . '` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
         $pdo->exec('USE `' . $config['base'] . '`');
         // Los archivos SQL no contienen datos aportados por el visitante.
-        $archivos = ['base','compras','ajustes','productos','recetas','produccion','ventas','pedidos','salidas','facturas'];
+        $archivos = ['base','compras','ajustes','productos','recetas','produccion','ventas','pedidos','salidas','facturas','anulaciones'];
         foreach ($archivos as $archivo) {
             $ruta = __DIR__ . '/database/' . $archivo . '.sql';
             if (is_file($ruta)) $pdo->exec(file_get_contents($ruta));

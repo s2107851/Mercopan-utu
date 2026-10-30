@@ -9,7 +9,7 @@ function periodoReporte(array $datos): array {
 }
 function resumenPeriodo(string $desde, string $fin): array {
     $ventas = consulta('SELECT COUNT(*) registros, COALESCE(SUM(total),0) importe FROM ventas WHERE fecha>=? AND fecha<?', [$desde,$fin])->fetch();
-    $compras = consulta('SELECT COUNT(*) registros, COALESCE(SUM(costo_total),0) importe FROM compras WHERE fecha>=? AND fecha<?', [$desde,$fin])->fetch();
+    $compras = consulta('SELECT COUNT(*) registros, COALESCE(SUM(costo_total),0) importe FROM compras WHERE fecha>=? AND fecha<? AND NOT EXISTS (SELECT 1 FROM anulaciones a WHERE a.tipo=\'compra\' AND a.registro_id=compras.id)', [$desde,$fin])->fetch();
     $productos = consulta('SELECT p.id,p.nombre,p.unidad,SUM(v.cantidad) cantidad,SUM(v.total) importe FROM ventas v JOIN productos p ON p.id=v.producto_id WHERE v.fecha>=? AND v.fecha<? GROUP BY p.id,p.nombre,p.unidad ORDER BY importe DESC,p.nombre', [$desde,$fin])->fetchAll();
     return ['ventas'=>$ventas,'compras'=>$compras,'productos'=>$productos];
 }

@@ -77,7 +77,7 @@ una compra por cada ingrediente, repitiendo el mismo número de comprobante.
 Cada compra guarda fecha, responsable y costo, y suma stock e historial en una
 transacción. No se permiten cantidades negativas, fracciones para artículos contados
 ni superar la capacidad de la columna de stock. No se duplica un formulario reenviado.
-No se incluye todavía lectura automática de facturas, anulaciones ni devoluciones.
+No se incluye todavía lectura automática de facturas ni devoluciones comerciales. Las anulaciones por error se realizan desde cada registro (HU16).
 
 ## Ajustes de inventario
 En Ajustes se selecciona un ingrediente activo, se ingresa la cantidad **real que se
@@ -99,7 +99,7 @@ El filtro por día empieza en hoy y permite consultar otras jornadas o todas las
 Cada operación actualiza ingredientes, productos e historial en una sola transacción.
 Si falta stock, un ingrediente está inactivo o falla el guardado, se revierte todo.
 No se admite reenviar el mismo formulario. La producción toma la fecha actual del servidor
-con zona horaria de Uruguay. No se incluyen edición/anulación de elaboraciones en esta pantalla. Las pérdidas de productos terminados se registran en Pérdidas / donaciones.
+con zona horaria de Uruguay. No se editan elaboraciones; el enlace Anular operación permite revertir una elaboración incorrecta con motivo (HU16). Las pérdidas de productos terminados se registran en Pérdidas / donaciones.
 
 ### Prueba rápida
 Con ejemplos y sin movimientos previos: elaborar un lote de Pan flauta.
@@ -160,8 +160,7 @@ La combinación proveedor + número confirmado es única. Formularios repetidos 
 pestañas con una versión antigua se rechazan. Una factura confirmada o cancelada no
 se edita; cancelar un borrador no revierte compras porque todavía no tiene ingresos.
 Se conservan nombres históricos y responsables de carga/confirmación, además del
-historial de guardado y cancelación del borrador. No incluye OCR ni anulación de
-facturas confirmadas (la reversión de operaciones corresponde al pendiente HU16).
+historial de guardado y cancelación del borrador. No incluye OCR. HU16 permite anular una factura confirmada completa, conservando sus datos y revirtiendo sus compras.
 
 **Actualización de BD obligatoria:** respaldar la base, copiar los archivos y abrir
 `instalar.php` desde la PC de XAMPP; pulsar **Preparar base de datos**. Agrega
@@ -171,6 +170,33 @@ Las compras antiguas se conservan, pero no se agrupan automáticamente en factur
 No importar un SQL de instalación completa sobre la base de trabajo.
 
 Prueba: `php tests/facturas.php`. Ver `docs/ENTREGA_14_facturas.md`.
-Después de esta entrega quedan 20 de 21 historias implementadas en código; falta
-completar HU16 (anulación trazable de compras y producciones). La aceptación final
-requiere prueba en XAMPP y revisión del equipo.
+La entrega 14 dejó 20 de 21 historias implementadas. La entrega 15 incorpora HU16; con ella quedan las 21 implementadas en código. La aceptación final requiere las pruebas en XAMPP y revisión del equipo.
+
+
+## Anular registros incorrectos (entrega 15 · HU16)
+Compras y Producción ofrecen **Anular operación**: revisar el registro, escribir el
+motivo y confirmar. Se conserva la operación y se registra fecha y nombre histórico
+del responsable. La reversión se aplica una sola vez dentro de una transacción.
+Una compra retira el ingrediente ingresado. Una producción retira lo elaborado y
+devuelve los consumos originales, independientemente de la receta actual. Si falta
+stock o se excede su capacidad, se rechaza todo. También se permite revertir un
+artículo desactivado: no se reactiva su catálogo.
+
+Los ingresos de una factura solo se anulan juntos desde Facturas. No se modifica
+la cabecera original ni se libera su número para duplicarlo. La interfaz muestra
+Anulada y sus compras quedan anuladas. La tabla anulaciones es la fuente del estado
+de reversión; estado=confirmada en la cabecera conserva el hecho histórico.
+No es una nota de crédito fiscal ni una devolución comercial.
+
+Resumen excluye compras anuladas del período original: al anular una compra puede
+cambiar el resumen de un mes anterior. CSV conserva todas las compras con Estado,
+Fecha anulación, Motivo y Anuló; filtrar Estado=vigente para sumar compras válidas.
+Las anulaciones se consultan también en Historial, módulo anulaciones.
+
+**Actualizar la BD:** hacer respaldo y ejecutar instalar.php actualizado, o importar
+solo database/anulaciones.sql en la base existente (si la entrega 14 ya está instalada).
+La migración agrega una tabla y se puede repetir sin borrar datos. Hasta instalarla,
+el sistema solicita actualizar la base. No importar SQL de instalación completa.
+
+Pruebas: php tests/anulaciones.php. Ver docs/ENTREGA_15_HU16.md para los criterios,
+limitaciones de validación e instrucciones de entrega.
